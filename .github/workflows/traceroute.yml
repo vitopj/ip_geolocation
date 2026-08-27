@@ -40,4 +40,4 @@ jobs:
           CLIENT_ID: ${{ vars.CLIENT_ID }}
           TARGET: ${{ vars.TARGET }}
         run: |
-          python client.py --once
+          python client2.py --once
