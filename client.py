@@ -95,46 +95,44 @@ def traceroute(target):
     hops = []
 
     for line in output.splitlines():
-        hop_match = re.match(r"^\s*(\d+)", line)
-
+        hop_match = re.match(r"^\s*(\d+)\s+(.*)$", line)
+    
         if not hop_match:
             continue
-
+    
         hop_number = int(hop_match.group(1))
-
+    
         rtts = re.findall(
             r"(<\d+(?:\.\d+)?|\d+(?:\.\d+)?)\s*ms",
             line,
         )
-
+    
         rtts = [
             float(value.replace("<", ""))
             for value in rtts
         ]
-
+    
         ips = re.findall(
             r"\b(?:\d{1,3}\.){3}\d{1,3}\b",
             line,
         )
-
+    
         hop = {
             "hop": hop_number,
             "ips": ips,
             "rtts": rtts,
             "raw": line.strip(),
         }
-
+    
         hops.append(hop)
-
+    
         print(
             hop_number,
             ips,
             rtts,
             flush=True,
         )
-
-    return hops
-
+        return hops
 
 def send_to_server(hops, location):
     payload = {
