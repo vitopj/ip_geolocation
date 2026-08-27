@@ -1,0 +1,24 @@
+services:
+  - type: worker
+    name: traceroute-client
+    runtime: python
+    buildCommand: |
+      apt-get update &&
+      apt-get install -y traceroute &&
+      pip install -r requirements.txt
+    startCommand: python client.py
+    envVars:
+      - key: SERVER
+        sync: false
+      - key: API_KEY
+        sync: false
+      - key: CLIENT_ID
+        sync: false
+      - key: LATITUDE
+        sync: false
+      - key: LONGITUDE
+        sync: false
+      - key: TARGET
+        sync: false
+      - key: INTERVAL
+        value: "300"
