@@ -91,6 +91,7 @@ def traceroute(target):
         )
 
     output = result.stdout
+    print(output)
 
     hops = []
 
