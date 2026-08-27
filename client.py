@@ -12,15 +12,16 @@ import requests
 SERVER = os.environ["SERVER"].rstrip("/")
 API_KEY = os.environ["API_KEY"]
 CLIENT_ID = os.environ["CLIENT_ID"]
+
 LATITUDE = float(os.environ["LATITUDE"])
 LONGITUDE = float(os.environ["LONGITUDE"])
+
 TARGET = os.environ["TARGET"]
-INTERVAL = int(os.environ.get("INTERVAL", "300"))
 
 
 def traceroute(target):
     print()
-    print("Running traceroute:", target, flush=True)
+    print("Running traceroute:", target)
 
     system_os = platform.system().lower()
 
@@ -28,20 +29,16 @@ def traceroute(target):
         command = [
             "tracert",
             "-d",
-            "-h",
-            "30",
-            "-w",
-            "1000",
+            "-h", "30",
+            "-w", "1000",
             target,
         ]
     else:
         command = [
             "traceroute",
             "-n",
-            "-m",
-            "30",
-            "-w",
-            "1",
+            "-m", "30",
+            "-w", "1",
             target,
         ]
 
@@ -88,12 +85,7 @@ def traceroute(target):
 
         hops.append(hop)
 
-        print(
-            hop_number,
-            ips,
-            rtts,
-            flush=True,
-        )
+        print(hop_number, ips, rtts)
 
     return hops
 
@@ -127,50 +119,17 @@ def send_to_server(hops):
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument(
-        "--once",
-        action="store_true",
-    )
-
+    parser.add_argument("--once", action="store_true")
     args = parser.parse_args()
 
-    while True:
-        try:
-            hops = traceroute(TARGET)
+    hops = traceroute(TARGET)
 
-            print(
-                f"\nSending {len(hops)} hops...",
-                flush=True,
-            )
+    print(f"\nSending {len(hops)} hops...")
 
-            response = send_to_server(hops)
+    response = send_to_server(hops)
 
-            print(
-                "Server response:",
-                flush=True,
-            )
-
-            print(
-                json.dumps(response, indent=2),
-                flush=True,
-            )
-
-        except Exception as error:
-            print(
-                "ERROR:",
-                error,
-                flush=True,
-            )
-
-        if args.once:
-            break
-
-        print(
-            f"\nWaiting {INTERVAL} seconds...",
-            flush=True,
-        )
-
-        time.sleep(INTERVAL)
+    print("Server response:")
+    print(json.dumps(response, indent=2))
 
 
 if __name__ == "__main__":
