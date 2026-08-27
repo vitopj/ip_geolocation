@@ -80,9 +80,9 @@ def traceroute(target):
         )
     except subprocess.TimeoutExpired:
         raise RuntimeError("Traceroute timed out after 120 seconds")
-
+    print("output", result.stdout)
     print("Traceroute exit code:", result.returncode, flush=True)
-
+    
     if result.stderr:
         print(
             "Traceroute stderr:",
@@ -91,7 +91,6 @@ def traceroute(target):
         )
 
     output = result.stdout
-    print("output: ", output)
 
     hops = []
 
