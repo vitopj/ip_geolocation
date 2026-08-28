@@ -45,7 +45,7 @@ jobs:
           echo "========================================"
           echo "TCP TRACEROUTE PORT 443"
           echo "========================================"
-          traceroute -n -T -p 443 -m 10 -w 2 petagimnazija.hr || true
+          sudo traceroute -n -T -p 443 -m 10 -w 2 petagimnazija.hr || true
 
           echo ""
           echo "========================================"
