@@ -1,13 +1,11 @@
 name: Traceroute Measurement
 
 on:
-  schedule:
-    - cron: "*/5 * * * *"
   workflow_dispatch:
 
 jobs:
   traceroute:
-    name: Run traceroute measurement
+    name: Test traceroute methods
     runs-on: ubuntu-latest
     timeout-minutes: 5
 
@@ -30,7 +28,32 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
-      - name: Run traceroute measurement
+      - name: Test traceroute methods
+        run: |
+          echo "========================================"
+          echo "UDP TRACEROUTE"
+          echo "========================================"
+          traceroute -n -m 10 -w 2 petagimnazija.hr || true
+
+          echo ""
+          echo "========================================"
+          echo "ICMP TRACEROUTE"
+          echo "========================================"
+          sudo traceroute -n -I -m 10 -w 2 petagimnazija.hr || true
+
+          echo ""
+          echo "========================================"
+          echo "TCP TRACEROUTE PORT 443"
+          echo "========================================"
+          traceroute -n -T -p 443 -m 10 -w 2 petagimnazija.hr || true
+
+          echo ""
+          echo "========================================"
+          echo "HTTPS CONNECTIVITY"
+          echo "========================================"
+          curl -I --connect-timeout 10 https://petagimnazija.hr || true
+
+      - name: Run Python client
         env:
           SERVER: ${{ secrets.SERVER }}
           API_KEY: ${{ secrets.API_KEY }}
