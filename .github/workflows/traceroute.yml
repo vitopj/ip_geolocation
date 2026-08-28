@@ -1,39 +1,40 @@
-name: TEST CODE
+name: Traceroute Measurement
 
 on:
+  schedule:
+    - cron: "*/5 * * * *"
   workflow_dispatch:
 
 jobs:
   traceroute:
-    name: TEST JOB
+    name: Run traceroute measurement
     runs-on: ubuntu-latest
+    timeout-minutes: 5
 
     steps:
-      - name: Checkout
+      - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: PROVE WHICH CODE WE HAVE
+      - name: Install traceroute
         run: |
-          echo "================================"
-          echo "COMMIT USED BY RUNNER:"
-          git rev-parse HEAD
-          echo "================================"
+          sudo apt-get update
+          sudo apt-get install -y traceroute
 
-          echo "LATEST COMMIT:"
-          git log -1 --oneline
-          echo "================================"
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
 
-          echo "CLIENT2 LOCATION:"
-          find "$GITHUB_WORKSPACE" -name "client2.py" -type f -print
-          echo "================================"
+      - name: Install Python dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
 
-          echo "CLIENT2 HASH:"
-          sha256sum "$GITHUB_WORKSPACE/client2.py"
-          echo "================================"
-
-          echo "LAST 20 LINES OF CLIENT2:"
-          tail -20 "$GITHUB_WORKSPACE/client2.py"
-          echo "================================"
-
-          echo "RUNNING CLIENT2:"
-          python -u "$GITHUB_WORKSPACE/client2.py" --once
+      - name: Run traceroute measurement
+        env:
+          SERVER: ${{ secrets.SERVER }}
+          API_KEY: ${{ secrets.API_KEY }}
+          CLIENT_ID: ${{ vars.CLIENT_ID }}
+          TARGET: ${{ vars.TARGET }}
+        run: |
+          python -u client2.py --once
