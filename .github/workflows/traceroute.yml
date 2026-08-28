@@ -1,4 +1,4 @@
-name: Traceroute Measurement
+name: test
 
 on:
   schedule:
