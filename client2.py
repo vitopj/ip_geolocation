@@ -60,7 +60,7 @@ def traceroute(target):
             target,
         ]
     else:
-        command = ["traceroute","-n","-I","-m", "30","-w", "2",target,]
+        command = ["sudo","traceroute","-n","-I","-m", "30","-w", "2",target,]
 
     try:
         result = subprocess.run(
